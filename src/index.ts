@@ -93,6 +93,26 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+// Auto-authenticate with ThermoWorks if credentials are provided via environment variables
+async function autoAuthenticate(): Promise<void> {
+  const email = process.env.THERMOWORKS_EMAIL;
+  const password = process.env.THERMOWORKS_PASSWORD;
+  const useLegacySmoke = process.env.USE_LEGACY_SMOKE === "true";
+
+  if (email && password) {
+    try {
+      console.error("Auto-authenticating with ThermoWorks...");
+      const client = getThermoWorksClient(useLegacySmoke);
+      await client.authenticate({ email, password });
+      const devices = await client.getDevices();
+      console.error(`ThermoWorks authentication successful. Found ${devices.length} device(s).`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error(`ThermoWorks auto-authentication failed: ${message}`);
+    }
+  }
+}
+
 // ===== TOOL REGISTRATIONS =====
 
 /**
@@ -1447,6 +1467,9 @@ Examples:
  * Run server with stdio transport (for local integrations)
  */
 async function runStdio(): Promise<void> {
+  // Auto-authenticate if credentials are provided
+  await autoAuthenticate();
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("BBQ MCP Server running on stdio");
@@ -1456,6 +1479,9 @@ async function runStdio(): Promise<void> {
  * Run server with HTTP transport (for remote access)
  */
 async function runHTTP(): Promise<void> {
+  // Auto-authenticate if credentials are provided
+  await autoAuthenticate();
+
   const app = express();
 
   // CORS configuration for Smithery deployment

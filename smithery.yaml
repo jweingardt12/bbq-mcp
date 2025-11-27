@@ -28,3 +28,8 @@ startCommand:
         description: "Default temperature unit"
         default: "fahrenheit"
     required: []
+  env:
+    THERMOWORKS_EMAIL: "{{thermoworksEmail}}"
+    THERMOWORKS_PASSWORD: "{{thermoworksPassword}}"
+    USE_LEGACY_SMOKE: "{{useLegacySmoke}}"
+    DEFAULT_TEMP_UNIT: "{{defaultTempUnit}}"
