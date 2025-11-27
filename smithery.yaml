@@ -1,8 +1,7 @@
 # Smithery Configuration for BBQ MCP Server
-# https://smithery.ai/docs/build/project-config/smithery-yaml
+# https://smithery.ai/docs/build/project-config
 
-# Use TypeScript runtime with Smithery CLI
+# TypeScript runtime - Smithery CLI handles the build
+# Entry point is defined in package.json "module" field (src/smithery.ts)
+# configSchema is exported from the TypeScript entry point
 runtime: typescript
-
-# Entry point for the server (exports default createServer function and configSchema)
-target: src/smithery.ts
