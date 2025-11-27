@@ -1,0 +1,37 @@
+# Smithery Configuration for BBQ MCP Server
+# https://smithery.ai/docs/build/project-config/smithery-yaml
+
+# Use TypeScript runtime with Smithery CLI
+runtime: typescript
+
+# Configuration schema for users connecting to this server
+startCommand:
+  type: http
+  configSchema:
+    type: object
+    properties:
+      thermoworksEmail:
+        type: string
+        format: email
+        title: "ThermoWorks Email"
+        description: "Your ThermoWorks account email (optional - can authenticate later)"
+      thermoworksPassword:
+        type: string
+        title: "ThermoWorks Password"
+        description: "Your ThermoWorks account password (optional - can authenticate later)"
+      useLegacySmoke:
+        type: boolean
+        default: false
+        title: "Use Legacy Smoke Gateway"
+        description: "Enable for older Smoke Gateway devices (pre-2022)"
+      defaultTempUnit:
+        type: string
+        enum: ["fahrenheit", "celsius"]
+        default: "fahrenheit"
+        title: "Temperature Unit"
+        description: "Default unit for temperature displays"
+  exampleConfig:
+    thermoworksEmail: "your-email@example.com"
+    thermoworksPassword: "your-password"
+    useLegacySmoke: false
+    defaultTempUnit: "fahrenheit"

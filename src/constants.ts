@@ -1,0 +1,796 @@
+/**
+ * BBQ MCP Server Constants
+ * Comprehensive cooking knowledge database based on USDA guidelines and BBQ best practices
+ */
+
+import type { ProteinProfile, ProteinType, CookMethod, DonenessLevel } from "./types.js";
+
+// Character limit for responses
+export const CHARACTER_LIMIT = 50000;
+
+// API configuration
+export const THERMOWORKS_CLOUD_URL = "https://cloud.thermoworks.com";
+
+// Default cooking temperatures (Fahrenheit)
+export const DEFAULT_SMOKER_TEMP = 225;
+export const HOT_FAST_TEMP = 300;
+
+/**
+ * Comprehensive protein cooking profiles
+ * Temperatures are in Fahrenheit
+ * Time estimates are minutes per pound at the recommended cook method
+ */
+export const PROTEIN_PROFILES: Record<ProteinType, ProteinProfile> = {
+  // ===== BEEF =====
+  beef_brisket: {
+    type: "beef_brisket",
+    displayName: "Beef Brisket",
+    category: "beef",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 60,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 203,
+      well_done: 195,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    stallRange: { start: 150, end: 175 },
+    estimatedTimePerPound: {
+      smoke_low_slow: 75, // ~1.25 hours per pound
+      smoke_hot_fast: 45,
+      grill_direct: 0,
+      grill_indirect: 60,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "The stall typically occurs between 150-175°F and can last several hours",
+      "Wrap in butcher paper at 165°F to push through the stall faster (Texas crutch)",
+      "Brisket is done when it probes like butter, usually around 203°F",
+      "Rest for at least 1 hour, up to 4 hours in a cooler for best results",
+      "Slice against the grain for the flat, cube for burnt ends",
+    ],
+  },
+  beef_ribeye: {
+    type: "beef_ribeye",
+    displayName: "Beef Ribeye",
+    category: "beef",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 10,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      rare: 120,
+      medium_rare: 130,
+      medium: 140,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["grill_direct", "reverse_sear"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 0,
+      smoke_hot_fast: 0,
+      grill_direct: 8,
+      grill_indirect: 15,
+      reverse_sear: 25,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Pull 5°F below target temperature to account for carryover",
+      "Let steak come to room temperature before cooking (30-45 min)",
+      "For reverse sear: smoke at 225°F until 10-15°F below target, then sear hot",
+      "Rest 5-10 minutes before slicing",
+    ],
+  },
+  beef_tri_tip: {
+    type: "beef_tri_tip",
+    displayName: "Beef Tri-Tip",
+    category: "beef",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 10,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      rare: 120,
+      medium_rare: 130,
+      medium: 140,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["reverse_sear", "grill_indirect", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 45,
+      smoke_hot_fast: 25,
+      grill_direct: 10,
+      grill_indirect: 20,
+      reverse_sear: 30,
+      spatchcock: 0,
+      rotisserie: 25,
+    },
+    tips: [
+      "Tri-tip has two different grain directions - identify before slicing",
+      "Great for Santa Maria style BBQ with red oak",
+      "Works well with a reverse sear approach",
+    ],
+  },
+  beef_prime_rib: {
+    type: "beef_prime_rib",
+    displayName: "Prime Rib Roast",
+    category: "beef",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 30,
+    carryoverDegrees: 10,
+    donenessTemps: {
+      rare: 115,
+      medium_rare: 125,
+      medium: 135,
+      medium_well: 145,
+      well_done: 155,
+    },
+    recommendedMethods: ["smoke_low_slow", "reverse_sear", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 35,
+      smoke_hot_fast: 20,
+      grill_direct: 0,
+      grill_indirect: 25,
+      reverse_sear: 35,
+      spatchcock: 0,
+      rotisserie: 20,
+    },
+    tips: [
+      "Pull 10°F early - prime rib has significant carryover",
+      "Bone-in roasts take slightly longer than boneless",
+      "Let rest uncovered to preserve crust, or tent loosely with foil",
+      "Consider a final high-heat sear for crust development",
+    ],
+  },
+  beef_short_ribs: {
+    type: "beef_short_ribs",
+    displayName: "Beef Short Ribs",
+    category: "beef",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 30,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 203,
+      well_done: 195,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    stallRange: { start: 150, end: 175 },
+    estimatedTimePerPound: {
+      smoke_low_slow: 90,
+      smoke_hot_fast: 50,
+      grill_direct: 0,
+      grill_indirect: 60,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Treat like mini briskets - low and slow for best results",
+      "Done when probe tender, usually around 203°F",
+      "English cut (bone-in slabs) or flanken cut both work well",
+    ],
+  },
+
+  // ===== PORK =====
+  pork_shoulder: {
+    type: "pork_shoulder",
+    displayName: "Pork Shoulder (Picnic)",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 45,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 205,
+      well_done: 195,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    stallRange: { start: 150, end: 175 },
+    estimatedTimePerPound: {
+      smoke_low_slow: 90,
+      smoke_hot_fast: 50,
+      grill_direct: 0,
+      grill_indirect: 60,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Bone-in shoulder has more fat and stays moister",
+      "Wrap at 165°F if you want to speed through the stall",
+      "Pull when probe slides in like butter (200-205°F)",
+      "Rest in a cooler for 1-2 hours for best pulling",
+    ],
+  },
+  pork_butt: {
+    type: "pork_butt",
+    displayName: "Pork Butt (Boston Butt)",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 60,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 205,
+      well_done: 195,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    stallRange: { start: 150, end: 175 },
+    estimatedTimePerPound: {
+      smoke_low_slow: 90,
+      smoke_hot_fast: 50,
+      grill_direct: 0,
+      grill_indirect: 60,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Classic pulled pork cut - very forgiving",
+      "Fat cap up or down is personal preference - try both",
+      "Internal temp of 195-205°F for perfect pulling",
+      "Can be held in a cooler wrapped for up to 4 hours",
+    ],
+  },
+  pork_ribs_spare: {
+    type: "pork_ribs_spare",
+    displayName: "Spare Ribs",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 15,
+    carryoverDegrees: 3,
+    donenessTemps: {
+      pullable: 203,
+      well_done: 195,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 60, // About 5-6 hours total
+      smoke_hot_fast: 40,
+      grill_direct: 0,
+      grill_indirect: 45,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "3-2-1 method: 3 hrs unwrapped, 2 hrs wrapped, 1 hr unwrapped with sauce",
+      "St. Louis style removes the rib tips for even cooking",
+      "Done when meat pulls back from bones about 1/4 inch",
+      "Bend test: ribs should crack but not fall apart",
+    ],
+  },
+  pork_ribs_baby_back: {
+    type: "pork_ribs_baby_back",
+    displayName: "Baby Back Ribs",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 10,
+    carryoverDegrees: 3,
+    donenessTemps: {
+      pullable: 195,
+      well_done: 185,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 50, // About 4-5 hours total
+      smoke_hot_fast: 35,
+      grill_direct: 0,
+      grill_indirect: 40,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "2-2-1 method works well for baby backs (shorter than spares)",
+      "More tender and leaner than spare ribs",
+      "Cook until 195°F for tender, 185°F for more bite",
+      "Remove membrane from bone side before cooking",
+    ],
+  },
+  pork_loin: {
+    type: "pork_loin",
+    displayName: "Pork Loin",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 15,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      medium_rare: 140,
+      medium: 145,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["smoke_low_slow", "reverse_sear", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 30,
+      smoke_hot_fast: 20,
+      grill_direct: 8,
+      grill_indirect: 20,
+      reverse_sear: 25,
+      spatchcock: 0,
+      rotisserie: 20,
+    },
+    tips: [
+      "Very lean - don't overcook! 145°F is perfect",
+      "Consider brining for extra moisture",
+      "Baste with butter during cooking to prevent drying",
+      "Great with a fruit-based glaze",
+    ],
+  },
+  pork_tenderloin: {
+    type: "pork_tenderloin",
+    displayName: "Pork Tenderloin",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 5,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      medium_rare: 140,
+      medium: 145,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["grill_direct", "reverse_sear", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 25,
+      smoke_hot_fast: 15,
+      grill_direct: 8,
+      grill_indirect: 15,
+      reverse_sear: 20,
+      spatchcock: 0,
+      rotisserie: 15,
+    },
+    tips: [
+      "Cooks very fast - watch carefully",
+      "Pull at 140°F, carryover will bring to 145°F",
+      "Remove silverskin before cooking",
+      "Great for quick weeknight meals",
+    ],
+  },
+  pork_belly: {
+    type: "pork_belly",
+    displayName: "Pork Belly",
+    category: "pork",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 15,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 200,
+      well_done: 190,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 60,
+      smoke_hot_fast: 40,
+      grill_direct: 0,
+      grill_indirect: 45,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Perfect for burnt ends - cube and sauce at 190°F",
+      "Score the skin for better fat rendering",
+      "Can be cured first for homemade bacon",
+      "Internal temp of 195-200°F for melt-in-mouth texture",
+    ],
+  },
+
+  // ===== POULTRY =====
+  chicken_whole: {
+    type: "chicken_whole",
+    displayName: "Whole Chicken",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: true,
+    restTimeMinutes: 15,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      usda_safe: 165,
+    },
+    recommendedMethods: ["spatchcock", "smoke_hot_fast", "rotisserie", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 45,
+      smoke_hot_fast: 25,
+      grill_direct: 0,
+      grill_indirect: 25,
+      reverse_sear: 0,
+      spatchcock: 15,
+      rotisserie: 20,
+    },
+    tips: [
+      "Spatchcocking reduces cook time by 30-40%",
+      "Breast meat is done at 165°F, thigh at 175°F for best texture",
+      "Dry brine overnight for crispier skin",
+      "Higher temps (300-350°F) produce crispier skin",
+    ],
+  },
+  chicken_breast: {
+    type: "chicken_breast",
+    displayName: "Chicken Breast",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: true,
+    restTimeMinutes: 5,
+    carryoverDegrees: 3,
+    donenessTemps: {
+      usda_safe: 165,
+    },
+    recommendedMethods: ["grill_direct", "grill_indirect", "smoke_hot_fast"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 35,
+      smoke_hot_fast: 20,
+      grill_direct: 8,
+      grill_indirect: 15,
+      reverse_sear: 20,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Brine or pound to even thickness for consistent cooking",
+      "Pull at 160°F - carryover will reach 165°F",
+      "Let rest 5 minutes before slicing",
+      "Don't overcook - breast dries out quickly",
+    ],
+  },
+  chicken_thighs: {
+    type: "chicken_thighs",
+    displayName: "Chicken Thighs",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: true,
+    restTimeMinutes: 5,
+    carryoverDegrees: 3,
+    donenessTemps: {
+      usda_safe: 165,
+      well_done: 175, // Better texture
+    },
+    recommendedMethods: ["grill_direct", "smoke_hot_fast", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 40,
+      smoke_hot_fast: 25,
+      grill_direct: 10,
+      grill_indirect: 18,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Dark meat is more forgiving than breast",
+      "175°F gives better texture than 165°F",
+      "Bone-in, skin-on has the best flavor",
+      "Great for marinades due to higher fat content",
+    ],
+  },
+  chicken_wings: {
+    type: "chicken_wings",
+    displayName: "Chicken Wings",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: false,
+    restTimeMinutes: 0,
+    carryoverDegrees: 2,
+    donenessTemps: {
+      usda_safe: 165,
+      well_done: 175,
+    },
+    recommendedMethods: ["smoke_hot_fast", "grill_direct", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 40,
+      smoke_hot_fast: 25,
+      grill_direct: 12,
+      grill_indirect: 20,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Higher heat (350°F+) for crispier skin",
+      "Smoke first, then crisp at high heat for best of both",
+      "Toss in sauce right before serving",
+      "Pat dry thoroughly for crispy results",
+    ],
+  },
+  turkey_whole: {
+    type: "turkey_whole",
+    displayName: "Whole Turkey",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: true,
+    restTimeMinutes: 30,
+    carryoverDegrees: 10,
+    donenessTemps: {
+      usda_safe: 165,
+    },
+    recommendedMethods: ["smoke_hot_fast", "spatchcock", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 40,
+      smoke_hot_fast: 20,
+      grill_direct: 0,
+      grill_indirect: 15,
+      reverse_sear: 0,
+      spatchcock: 12,
+      rotisserie: 13,
+    },
+    tips: [
+      "Spatchcock for more even cooking and faster time",
+      "Pull at 157°F in breast, carryover will reach 165°F",
+      "Thighs can go to 175-180°F for better texture",
+      "Dry brine 24-48 hours for best results",
+      "Rest 30+ minutes before carving",
+    ],
+  },
+  turkey_breast: {
+    type: "turkey_breast",
+    displayName: "Turkey Breast",
+    category: "poultry",
+    usdaSafeTemp: 165,
+    requiresRest: true,
+    restTimeMinutes: 20,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      usda_safe: 165,
+    },
+    recommendedMethods: ["smoke_hot_fast", "grill_indirect", "smoke_low_slow"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 35,
+      smoke_hot_fast: 20,
+      grill_direct: 0,
+      grill_indirect: 15,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 15,
+    },
+    tips: [
+      "Great option for smaller gatherings",
+      "Brine for moisture - turkey breast is lean",
+      "Pull at 160°F for juiciest results",
+      "Compound butter under the skin adds flavor",
+    ],
+  },
+
+  // ===== LAMB =====
+  lamb_shoulder: {
+    type: "lamb_shoulder",
+    displayName: "Lamb Shoulder",
+    category: "lamb",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 30,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      pullable: 200,
+      well_done: 190,
+    },
+    recommendedMethods: ["smoke_low_slow", "smoke_hot_fast"],
+    stallRange: { start: 150, end: 170 },
+    estimatedTimePerPound: {
+      smoke_low_slow: 60,
+      smoke_hot_fast: 40,
+      grill_direct: 0,
+      grill_indirect: 45,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Great for pulled lamb - treat like pork shoulder",
+      "Strong flavor pairs well with bold seasonings",
+      "Mediterranean spices work beautifully",
+      "Can have a slight stall like pork",
+    ],
+  },
+  lamb_leg: {
+    type: "lamb_leg",
+    displayName: "Leg of Lamb",
+    category: "lamb",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 20,
+    carryoverDegrees: 8,
+    donenessTemps: {
+      rare: 120,
+      medium_rare: 130,
+      medium: 140,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["smoke_low_slow", "grill_indirect", "reverse_sear", "rotisserie"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 30,
+      smoke_hot_fast: 20,
+      grill_direct: 0,
+      grill_indirect: 20,
+      reverse_sear: 30,
+      spatchcock: 0,
+      rotisserie: 18,
+    },
+    tips: [
+      "Bone-in has better flavor but longer cooking time",
+      "Butterflied leg cooks more evenly",
+      "Medium-rare (130-135°F) is ideal for leg of lamb",
+      "Rosemary and garlic are classic pairings",
+    ],
+  },
+  lamb_rack: {
+    type: "lamb_rack",
+    displayName: "Rack of Lamb",
+    category: "lamb",
+    usdaSafeTemp: 145,
+    requiresRest: true,
+    restTimeMinutes: 10,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      rare: 120,
+      medium_rare: 130,
+      medium: 140,
+      medium_well: 150,
+      well_done: 160,
+    },
+    recommendedMethods: ["reverse_sear", "grill_direct", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 30,
+      smoke_hot_fast: 18,
+      grill_direct: 10,
+      grill_indirect: 18,
+      reverse_sear: 25,
+      spatchcock: 0,
+      rotisserie: 15,
+    },
+    tips: [
+      "Elegant cut - great for special occasions",
+      "French the bones for presentation",
+      "Reverse sear gives most control over doneness",
+      "Rest 10 minutes before slicing into chops",
+    ],
+  },
+
+  // ===== SEAFOOD =====
+  salmon: {
+    type: "salmon",
+    displayName: "Salmon",
+    category: "seafood",
+    usdaSafeTemp: 145,
+    requiresRest: false,
+    restTimeMinutes: 0,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      medium_rare: 120,
+      medium: 130,
+      well_done: 145,
+    },
+    recommendedMethods: ["smoke_low_slow", "grill_direct", "grill_indirect"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 45,
+      smoke_hot_fast: 25,
+      grill_direct: 8,
+      grill_indirect: 15,
+      reverse_sear: 0,
+      spatchcock: 0,
+      rotisserie: 0,
+    },
+    tips: [
+      "Wild salmon is leaner than farmed",
+      "Skin-side down prevents sticking",
+      "Pull at 120-125°F for silky texture",
+      "Smoked salmon is incredible - cold or hot smoke",
+    ],
+  },
+
+  // ===== OTHER =====
+  other: {
+    type: "other",
+    displayName: "Other Protein",
+    category: "beef",
+    usdaSafeTemp: 165, // Safest default
+    requiresRest: true,
+    restTimeMinutes: 10,
+    carryoverDegrees: 5,
+    donenessTemps: {
+      usda_safe: 165,
+    },
+    recommendedMethods: ["grill_indirect", "smoke_low_slow"],
+    estimatedTimePerPound: {
+      smoke_low_slow: 60,
+      smoke_hot_fast: 40,
+      grill_direct: 10,
+      grill_indirect: 20,
+      reverse_sear: 25,
+      spatchcock: 0,
+      rotisserie: 20,
+    },
+    tips: [
+      "When in doubt, use a food thermometer",
+      "USDA recommends 165°F for unknown proteins",
+      "Research specific protein for best results",
+    ],
+  },
+};
+
+/**
+ * Cook method descriptions and temperature ranges
+ */
+export const COOK_METHOD_INFO: Record<CookMethod, { displayName: string; tempRange: string; description: string }> = {
+  smoke_low_slow: {
+    displayName: "Low & Slow Smoke",
+    tempRange: "225-250°F",
+    description: "Traditional BBQ method. Best for large, tough cuts that need time to break down collagen.",
+  },
+  smoke_hot_fast: {
+    displayName: "Hot & Fast Smoke",
+    tempRange: "275-325°F",
+    description: "Faster smoking method. Good for poultry and when time is limited.",
+  },
+  grill_direct: {
+    displayName: "Direct Grilling",
+    tempRange: "400-500°F",
+    description: "Food directly over heat source. Best for steaks, chops, and quick-cooking items.",
+  },
+  grill_indirect: {
+    displayName: "Indirect Grilling",
+    tempRange: "300-350°F",
+    description: "Food offset from heat. Good for roasts and larger items that need slower cooking.",
+  },
+  reverse_sear: {
+    displayName: "Reverse Sear",
+    tempRange: "225°F then 500°F+",
+    description: "Start low to bring to temp evenly, finish with high-heat sear for crust.",
+  },
+  spatchcock: {
+    displayName: "Spatchcock/Butterfly",
+    tempRange: "325-400°F",
+    description: "Backbone removed, flattened bird. Cooks faster and more evenly.",
+  },
+  rotisserie: {
+    displayName: "Rotisserie",
+    tempRange: "300-350°F",
+    description: "Rotating spit for self-basting. Great for whole poultry and roasts.",
+  },
+};
+
+/**
+ * Doneness level display names and descriptions
+ */
+export const DONENESS_INFO: Record<DonenessLevel, { displayName: string; description: string }> = {
+  rare: {
+    displayName: "Rare",
+    description: "Cool red center, very soft texture",
+  },
+  medium_rare: {
+    displayName: "Medium Rare",
+    description: "Warm red center, firm outside with soft interior",
+  },
+  medium: {
+    displayName: "Medium",
+    description: "Warm pink center throughout",
+  },
+  medium_well: {
+    displayName: "Medium Well",
+    description: "Slight pink in center, mostly gray-brown",
+  },
+  well_done: {
+    displayName: "Well Done",
+    description: "No pink, uniformly gray-brown throughout",
+  },
+  pullable: {
+    displayName: "Pullable/Shreddable",
+    description: "Collagen broken down, meat falls apart easily",
+  },
+  usda_safe: {
+    displayName: "USDA Safe Minimum",
+    description: "Minimum safe temperature per USDA guidelines",
+  },
+};

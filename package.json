@@ -1,0 +1,37 @@
+{
+  "name": "bbq-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for BBQ cooking guidance with ThermoWorks Cloud integration",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "src/smithery.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "npx @smithery/cli dev",
+    "dev:local": "tsc --watch",
+    "smithery:build": "npx @smithery/cli build",
+    "smithery:dev": "npx @smithery/cli dev"
+  },
+  "keywords": [
+    "mcp",
+    "bbq",
+    "thermoworks",
+    "cooking",
+    "temperature",
+    "smoking"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "express": "^4.18.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@smithery/cli": "^1.4.6",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.2"
+  }
+}

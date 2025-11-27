@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<evaluation>
+  <qa_pair>
+    <question>What is the recommended pull temperature for a beef brisket if I want it to be probe-tender and pullable, accounting for carryover cooking?</question>
+    <answer>198</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>For a pork butt cooked low and slow at 225°F, what temperature range defines the "stall zone" where evaporative cooling causes a temperature plateau?</question>
+    <answer>150-175</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>According to USDA guidelines, what is the minimum safe internal temperature for whole poultry like chicken and turkey?</question>
+    <answer>165</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>How many minutes of rest time is recommended for a beef brisket after removing it from the smoker?</question>
+    <answer>60</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>What is the expected carryover temperature rise (in degrees Fahrenheit) for a prime rib roast during resting?</question>
+    <answer>10</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>For spare ribs using the traditional 3-2-1 method, what is the recommended internal temperature when they're done and pullable?</question>
+    <answer>203</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>What temperature (in Fahrenheit) should you pull a medium-rare beef ribeye from the heat to account for 5 degrees of carryover?</question>
+    <answer>125</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>How many different protein types are supported by the BBQ MCP server in the "pork" category?</question>
+    <answer>7</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>What is the USDA safe minimum internal temperature for pork chops and pork loin?</question>
+    <answer>145</answer>
+  </qa_pair>
+  
+  <qa_pair>
+    <question>For a whole turkey using the spatchcock method, approximately how many minutes per pound should you estimate for cook time?</question>
+    <answer>12</answer>
+  </qa_pair>
+</evaluation>
