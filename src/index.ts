@@ -17,6 +17,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
+import cors from "cors";
 
 import { PROTEIN_PROFILES, COOK_METHOD_INFO, DONENESS_INFO } from "./constants.js";
 import {
@@ -1456,6 +1457,15 @@ async function runStdio(): Promise<void> {
  */
 async function runHTTP(): Promise<void> {
   const app = express();
+
+  // CORS configuration for Smithery deployment
+  app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'mcp-session-id'],
+    exposedHeaders: ['mcp-session-id', 'mcp-protocol-version'],
+  }));
+
   app.use(express.json());
 
   // Health check endpoint

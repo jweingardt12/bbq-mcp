@@ -1,8 +1,30 @@
 # Smithery Configuration for BBQ MCP Server
-# https://smithery.ai/docs/build/project-config/smithery-yaml
+# https://smithery.ai/docs/build/deployments/custom-container
 
-# Use TypeScript runtime with Smithery CLI
-runtime: typescript
+runtime: "container"
 
-# Entry point for the server (exports default createServer function and configSchema)
-target: src/smithery.ts
+build:
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
+
+startCommand:
+  type: "http"
+  configSchema:
+    type: "object"
+    properties:
+      thermoworksEmail:
+        type: "string"
+        description: "ThermoWorks account email (optional)"
+      thermoworksPassword:
+        type: "string"
+        description: "ThermoWorks account password (optional)"
+      useLegacySmoke:
+        type: "boolean"
+        description: "Use legacy Smoke Gateway"
+        default: false
+      defaultTempUnit:
+        type: "string"
+        enum: ["fahrenheit", "celsius"]
+        description: "Default temperature unit"
+        default: "fahrenheit"
+    required: []
