@@ -1479,7 +1479,7 @@ async function runStdio(): Promise<void> {
  * Run server with HTTP transport (for remote access)
  */
 async function runHTTP(): Promise<void> {
-  // Auto-authenticate if credentials are provided
+  // Auto-authenticate if credentials are provided via environment variables
   await autoAuthenticate();
 
   const app = express();
@@ -1501,6 +1501,26 @@ async function runHTTP(): Promise<void> {
 
   // MCP endpoint
   app.post("/mcp", async (req, res) => {
+    // Smithery passes config via query parameters
+    const email = req.query.thermoworksEmail as string | undefined;
+    const password = req.query.thermoworksPassword as string | undefined;
+    const useLegacySmoke = req.query.useLegacySmoke === "true";
+
+    // Auto-authenticate if credentials provided via query params and not already authenticated
+    if (email && password) {
+      const client = getThermoWorksClient(useLegacySmoke);
+      if (!client.isAuthenticated()) {
+        try {
+          console.error("Auto-authenticating with ThermoWorks via query params...");
+          await client.authenticate({ email, password });
+          console.error("ThermoWorks authentication successful via query params.");
+        } catch (err) {
+          const message = err instanceof Error ? err.message : "Unknown error";
+          console.error(`ThermoWorks auto-authentication failed: ${message}`);
+        }
+      }
+    }
+
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
       enableJsonResponse: true,
