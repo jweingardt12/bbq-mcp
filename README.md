@@ -1,5 +1,7 @@
 # 🍖 BBQ MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@jweingardt12/bbq-mcp)](https://smithery.ai/server/@jweingardt12/bbq-mcp)
+
 An MCP (Model Context Protocol) server for BBQ cooking guidance with **live ThermoWorks Cloud integration**. Connect your ThermoWorks account to get real-time temperature readings, expert cooking guidance, stall detection, and perfectly timed cooks.
 
 ## ✨ What's New: Real ThermoWorks Authentication
