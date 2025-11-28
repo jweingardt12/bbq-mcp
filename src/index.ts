@@ -1501,6 +1501,14 @@ async function runHTTP(): Promise<void> {
 
   // MCP endpoint
   app.post("/mcp", async (req, res) => {
+    // Debug: Log what Smithery sends us
+    console.error("=== MCP Request Debug ===");
+    console.error("Query params:", JSON.stringify(req.query));
+    console.error("Headers:", JSON.stringify(req.headers));
+    console.error("Body method:", req.body?.method);
+    console.error("Body params:", JSON.stringify(req.body?.params));
+    console.error("=========================");
+
     // Smithery passes config via query parameters
     const email = req.query.thermoworksEmail as string | undefined;
     const password = req.query.thermoworksPassword as string | undefined;
@@ -1519,6 +1527,9 @@ async function runHTTP(): Promise<void> {
           console.error(`ThermoWorks auto-authentication failed: ${message}`);
         }
       }
+    } else {
+      console.error("No credentials in query params, checking env vars...");
+      console.error("THERMOWORKS_EMAIL env:", process.env.THERMOWORKS_EMAIL ? "SET" : "NOT SET");
     }
 
     const transport = new StreamableHTTPServerTransport({
